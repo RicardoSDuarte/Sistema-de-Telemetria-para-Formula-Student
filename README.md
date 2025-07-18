@@ -27,15 +27,16 @@ Este projeto tem como objetivo o desenvolvimento de um sistema de telemetria sem
 
 ## 📁 Estrutura do Projeto
 .
-├── projeto/           # Código-fonte do sistema
-│   ├── microcontroladores/   # Código para os microcontroladores (ESP32)
-│   └── aplicacao/            # Código da aplicação de visualização e interface
+├── projeto/                  # Código-fonte do sistema
+│   ├── microcontroladores/  # Código para os microcontroladores (ESP32)
+│   └── aplicacao/           # Código da aplicação de visualização e interface
 │
-├── docs/              # Documentação técnica
-│   ├── relatorios/           # Relatórios do projeto em LaTeX/PDF
-│   ├── pcb/                  # Ficheiros do design da PCB (Altium/KiCad)
-│   └── datasheets/           # Datasheets dos componentes utilizados
+├── docs/                    # Documentação técnica
+│   ├── relatorios/          # Relatórios do projeto em LaTeX/PDF
+│   ├── pcb/                 # Ficheiros do design da PCB (Altium/KiCad)
+│   └── datasheets/          # Datasheets dos componentes utilizados
 │
-├── README.md          # Este ficheiro de apresentação do projeto
-└── LICENSE            # Licença de utilização do projeto
+├── README.md                # Ficheiro de apresentação do projeto
+└── LICENSE                  # Licença de utilização do projeto
+
 
