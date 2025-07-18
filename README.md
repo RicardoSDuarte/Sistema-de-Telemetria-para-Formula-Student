@@ -1,9 +1,6 @@
-# Telemetria para Formula Student
+# Sistema de Telemetria para Formula Student
 
-Este projeto teve como objetivo desenvolver um sistema de telemetria para um
-veículo da competição Formula Student, permitindo a aquisição, transmissão, ar-
-mazenamento e visualização em tempo real de dados provenientes dos sensores do
-veículo.
+Este projeto teve como objetivo desenvolver um sistema de telemetria para um veículo da competição Formula Student, permitindo a aquisição, transmissão, armazenamento e visualização em tempo real de dados provenientes dos sensores do veículo.
 
 ## 🚀 Funcionalidades
 - Aquisição de dados via CAN Bus
