@@ -6,12 +6,12 @@ Este projeto tem como objetivo o desenvolvimento de um sistema de telemetria sem
 
 ## 🚀 Funcionalidades
 
-- 📡 Aquisição de dados via CAN Bus
+- 📡 Aquisição de dados do barramento CAN
 - 📶 Transmissão sem fios utilizando ESP-NOW
-- 🧰 Interface personalizada para filtragem e exportação de dados
+- 🧰 Interface personalizada para filtragem 
 - 🔗 Integração com o software SavvyCAN
-- 💾 Gravação local em SPIFFS no microcontrolador
-- 🛠️ PCB personalizada desenvolvida para o módulo ESP32RET
+- 💾 Datalogging num cartão Micro SD
+-  🛠️ PCB personalizada desenvolvida para o módulo ESP32RET
 
 ---
 
@@ -28,15 +28,25 @@ Este projeto tem como objetivo o desenvolvimento de um sistema de telemetria sem
 ## 📁 Estrutura do Projeto
 .
 ├── projeto/                  # Código-fonte do sistema
+
 │   ├── microcontroladores/  # Código para os microcontroladores (ESP32)
+
 │   └── aplicacao/           # Código da aplicação de visualização e interface
+
 │
+
 ├── docs/                    # Documentação técnica
+
 │   ├── relatorios/          # Relatórios do projeto em LaTeX/PDF
+
 │   ├── pcb/                 # Ficheiros do design da PCB (Altium/KiCad)
+
 │   └── datasheets/          # Datasheets dos componentes utilizados
+
 │
+
 ├── README.md                # Ficheiro de apresentação do projeto
+
 └── LICENSE                  # Licença de utilização do projeto
 
 
