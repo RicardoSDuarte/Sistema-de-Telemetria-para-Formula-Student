@@ -26,5 +26,15 @@ Este projeto tem como objetivo o desenvolvimento de um sistema de telemetria sem
 
 ---
 
+## 🛠️ Ferramentas e Software Utilizados
+
+- **Desenvolvimento e Programação:** Arduino IDE, IntelliJ IDEA Community Edition  
+- **Microcontrolador:** XiaoESP32s3  
+- **Análise de Dados e Diagnóstico CAN:** SavvyCAN  
+- **Design de PCB:** Altium Designer  
+- **Documentação e Versionamento:** GitHub, LaTeX 
+
+---
+
 ## 📁 Estrutura do Projeto
 
