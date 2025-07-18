@@ -27,6 +27,7 @@ Este projeto tem como objetivo o desenvolvimento de um sistema de telemetria sem
 
 ## 📁 Organização do Projeto:
 O repositório encontra-se dividido em duas diretorias:
+
 •	Docs, que contém todos os documentos relativos ao projeto.
 •	Projeto, que contém o código referente ao microcontrolador Veiculo, Base e a aplicação filtro.
 
