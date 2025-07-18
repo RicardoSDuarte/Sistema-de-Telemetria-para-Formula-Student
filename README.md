@@ -25,28 +25,8 @@ Este projeto tem como objetivo o desenvolvimento de um sistema de telemetria sem
 
 ---
 
-## 📁 Estrutura do Projeto
-.
-├── projeto/                  # Código-fonte do sistema
-
-│   ├── microcontroladores/  # Código para os microcontroladores (ESP32)
-
-│   └── aplicacao/           # Código da aplicação de visualização e interface
-
-│
-
-├── docs/                    # Documentação técnica
-
-│   ├── relatorios/          # Relatórios do projeto em LaTeX/PDF
-
-│   ├── pcb/                 # Ficheiros do design da PCB (Altium/KiCad)
-
-│   └── datasheets/          # Datasheets dos componentes utilizados
-
-│
-
-├── README.md                # Ficheiro de apresentação do projeto
-
-└── LICENSE                  # Licença de utilização do projeto
-
+## 📁 Organização do Projeto:
+O repositório encontra-se dividido em duas diretorias:
+•	Docs, que contém todos os documentos relativos ao projeto.
+•	Projeto, que contém o código referente ao microcontrolador Veiculo, Base e a aplicação filtro.
 
