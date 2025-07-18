@@ -29,5 +29,5 @@ Este projeto tem como objetivo o desenvolvimento de um sistema de telemetria sem
 O repositório encontra-se dividido em duas diretorias:
 
 -	Docs, que contém todos os documentos relativos ao projeto.
--	Projeto, que contém o código referente ao microcontrolador Veiculo, Base e a aplicação filtro.
+-	Projeto, que contém o código referente ao microcontrolador Veículo, Base e a aplicação filtro.
 
