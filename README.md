@@ -1,6 +1,9 @@
 # Telemetria para Formula Student
 
-Este projeto implementa um sistema completo de telemetria sem fios utilizando ESP32 e ESP-NOW, destinado a uma viatura da equipa Formula Student.
+Este projeto teve como objetivo desenvolver um sistema de telemetria para um
+veículo da competição Formula Student, permitindo a aquisição, transmissão, ar-
+mazenamento e visualização em tempo real de dados provenientes dos sensores do
+veículo.
 
 ## 🚀 Funcionalidades
 - Aquisição de dados via CAN Bus
