@@ -1,3 +1,4 @@
+#include "esp_wifi_types_generic.h"
 //APP CARRO
 
 #include "esp_now.h"
@@ -36,14 +37,44 @@ void ESPNOW::ESPNOW_Init() {
       Serial.println("Peer adicionado com sucesso!");
     }
   }
+  esp_wifi_config_espnow_rate(WIFI_IF_STA, WIFI_PHY_RATE_5M_L);
 }
 
 bool ESPNOW::sendFrame(const CAN_FRAME &frame) {
   esp_err_t result = esp_now_send(peerAddress, (uint8_t *)&frame, sizeof(CAN_FRAME));
+  
+  if (result == ESP_ERR_ESPNOW_NO_MEM) {
+    Serial.println("Buffer ESP-NOW cheio!");
+    // Implementar retry ou controle de fluxo
+  }
+  
   return (result == ESP_OK);
 }
+bool ESPNOW::sendFrame_v2(const CAN_FRAME *frame, int maxRetries, int size) {
+    for (int i = 0; i < maxRetries; i++) {
+        esp_err_t result = esp_now_send(peerAddress, (uint8_t *)frame, sizeof(CAN_FRAME)*size);
+        
+        if (result == ESP_OK) {
+            return true;
+        }
+        
+        if (result == ESP_ERR_ESPNOW_NO_MEM) {
+            vTaskDelay(pdMS_TO_TICKS(1)); // Pequeno delay para buffer esvaziar
+            continue;
+        }
+        
+        // Outros erros (peer não encontrado, etc)
+        Serial.print("Erro ESP-NOW: ");
+        Serial.println(result);
+        return false;
+    }
+    
+    Serial.println("Falha após todas as tentativas - Buffer cheio");
+    return false;
+}
+
 int c=0;
-void ESPNOW::onDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
+void ESPNOW::onDataSent(const uint8_t*mac_addr, esp_now_send_status_t status) {
   //Serial.print("Status de envio: ");
   //Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Sucesso" : "Falha");
   if(status != ESP_NOW_SEND_SUCCESS){

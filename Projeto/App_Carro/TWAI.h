@@ -9,7 +9,7 @@
 #define TX_PIN 5 // GPIO5
 #define CAN_EN_PIN 4 // GPIO4
 
-#define POLLING_RATE_MS 1000
+#define POLLING_RATE_MS 1
 
 class TWAILib {
 public:

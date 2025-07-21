@@ -6,6 +6,7 @@
 #include <LedControl.h>
 
 #define Led_SDCard 1
+#define MESSAGE_CAN_FRAMES_TO_SEND 10
 
 // === Variáveis e objetos globais ===
 TWAILib canbus;
@@ -16,7 +17,7 @@ ESPNOW esp(broadcastAddress); // MAC do transmissor
 bool SDC;
 
 QueueHandle_t QueueHandle;
-const int QueueElementSize = 128;
+const int QueueElementSize = 512;
 LedControl LSDcard(Led_SDCard);
 
 // === Buffer para comandos ESP-NOW ===
@@ -43,7 +44,6 @@ void setup() {
   esp_wifi_set_ps(WIFI_PS_NONE);
   Serial.println("Power saving desativado");
 
-  esp_wifi_config_espnow_rate(WIFI_IF_STA, WIFI_PHY_RATE_5M_L);
 
   //  esp_now_set_peer_rate_config(const int *peer_addr, esp_now_rate_config_t *config);
 
@@ -58,9 +58,9 @@ void setup() {
     Serial.println("Erro ao criar fila");
   }
 
-  xTaskCreatePinnedToCore(Task_CANRead, "CANRead", 8192, NULL, 1, NULL, 0);
-  xTaskCreatePinnedToCore(Task_CANSend, "CANSend", 8192, NULL, 1, NULL, 1);
-  xTaskCreatePinnedToCore(taskCanFilterControl, "CanFilterControl", 8192, NULL, 1, NULL, 1);
+  xTaskCreatePinnedToCore(Task_CANRead, "CANRead", 8192, NULL, configMAX_PRIORITIES - 1, NULL, 0);
+  xTaskCreatePinnedToCore(Task_CANSend, "CANSend", 32768, NULL, configMAX_PRIORITIES - 1, NULL, 1);
+  xTaskCreatePinnedToCore(taskCanFilterControl, "CanFilterControl", 8192, NULL, configMAX_PRIORITIES - 1, NULL, 1);
 }
 
 void loop() {
@@ -73,21 +73,7 @@ void Task_CANRead(void *pvParameters) {
   while (true) {
     msg = canbus.Check_frame();
     while (msg.id != 0) {
-      
-      c++;
-   //   if(c>68550){
-    //    Serial.println(c);
-     // }
-      if (SDC) {
-        Save_GVRET(msg);
-        // LSDcard.led_off(); // use se quiser indicar SD OK
-      }
-
-      //if (CANFilter::isFilterEnabled()) {
-      //  if (filter.isValidId(msg)) {
-          xQueueSend(QueueHandle, &msg, 0);
-      //  }
-      //} 
+      if(xQueueSend(QueueHandle, &msg, 0) != pdPASS) Serial.println("Erro ao enviar para a QueueHandle");
       msg = canbus.Check_frame();
     }
     taskYIELD(); // ou vTaskDelay(0);
@@ -95,16 +81,54 @@ void Task_CANRead(void *pvParameters) {
 }
 
 void Task_CANSend(void *pvParameters) {
-  int c=0;
-  CAN_FRAME msg;
-  while (true) {
-    if (xQueueReceive(QueueHandle, &msg, portMAX_DELAY) == pdPASS) {
+    int c = 0;
+    CAN_FRAME msg;
+    CAN_FRAME msg_array[MESSAGE_CAN_FRAMES_TO_SEND];
+    uint8_t can_frame_idx = 0;
+    unsigned long now;
+    static unsigned long lastFlush = 0;
+    bool ESPFULL =false;
 
-    //c++;
-     //Serial.println(c);
-    esp.sendFrame(msg);
-    }
-    vTaskDelay(0);  // yield rápido
+    while (true) {
+
+      //só ler se o destinatario disponivel
+      // Recebe mensagem da queue
+      //if(!ESPFULL) // Só vai buscar uma frame à fila caso os buffer do esp e do sd card não tiverem cheios
+      //{
+        while (xQueueReceive(QueueHandle, &msg, pdMS_TO_TICKS(10)) == pdPASS) 
+        {
+          
+          if (SDC) // Guarda no SD card se ativo 
+          {
+            Save_GVRET(msg);
+          }
+          
+          if (!CANFilter::isFilterEnabled() || filter.isValidId(msg)) // Só envia se o filtro estiver desligado ou se o id estiver na listas
+          { 
+            msg_array[can_frame_idx++] = msg;
+            
+          }
+          if(can_frame_idx>=MESSAGE_CAN_FRAMES_TO_SEND){
+            ESPFULL = esp.sendFrame_v2(msg_array, 5, MESSAGE_CAN_FRAMES_TO_SEND);
+            if (!ESPFULL)
+            {
+              Serial.println("Falha crítica no envio ESP-NOW");
+            }
+            can_frame_idx=0;
+          }
+        //}
+      }  
+        // Flush periódico do buffer para SD
+      now = xTaskGetTickCount();
+      if (now - lastFlush >= 1000) {  // Flush a cada 1000ms
+          if (SDC) {
+              flushBufferToSD();
+          }
+          lastFlush = now;
+      }
+
+      // Delay para permitir outras tasks
+      vTaskDelay(pdMS_TO_TICKS(1));  
   }
 }
 
@@ -136,7 +160,7 @@ void taskCanFilterControl(void *pvParameters) {
         filter.clearList();
       }
     }
-    vTaskDelay(pdMS_TO_TICKS(10));
+    vTaskDelay(pdMS_TO_TICKS(1000));
   }
 
 }

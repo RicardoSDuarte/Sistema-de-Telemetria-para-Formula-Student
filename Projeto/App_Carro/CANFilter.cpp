@@ -7,7 +7,7 @@ std::vector<uint32_t> CANFilter::validIds = {
     0x13A, 0x13B, 0x13C, 0x13D, 0x13E
 };
 
-bool CANFilter::filterEnabled = true;
+bool CANFilter::filterEnabled = false;
 
 bool CANFilter::isValidId(const CAN_FRAME& msg) {
     if (!filterEnabled) return true;
