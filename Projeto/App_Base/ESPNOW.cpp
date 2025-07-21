@@ -4,6 +4,9 @@
 #include "esp_now.h"
 #include "ESPNOW.h"
 
+#define MESSAGE_CAN_FRAMES_TO_SEND 10
+
+
 // // Definição da estrutura FILTRO
 // typedef struct {
 //   uint16_t id;
@@ -94,31 +97,27 @@ void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status) {
   Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Sucesso" : "Falha");
 }
 
-// int c = 0;
-
+int c = 0;
+uint64_t error = 0;
 void onDataReceive(const esp_now_recv_info_t *info, const uint8_t *incomingData, int len) {
   // static int c = 0;
-  if (len != sizeof(CAN_FRAME)) {
-    Serial.println("Tamanho de pacote inválido");
+  if (len != sizeof(CAN_FRAME)*MESSAGE_CAN_FRAMES_TO_SEND) {
+    //Serial.println("Tamanho de pacote inválido");
+    error++;
     return;
   }
     
-  // c++;
   // Serial.println(c);
-  CAN_FRAME receivedFrame;
-  memcpy(&receivedFrame, incomingData, sizeof(CAN_FRAME));
-  memcpy(latestMac, info->src_addr, 6);
-  //receivedFrame.data.value = c;
-  
-  // Envia diretamente para a fila
-  BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-  if (xQueueSend(QueueHandle, &receivedFrame, 0) != pdTRUE) {
-    Serial.println("Falha ao enviar para fila");
-  }
-  
-  // Se uma task de maior prioridade foi acordada, força o context switch
-  if (xHigherPriorityTaskWoken == pdTRUE) {
-    portYIELD_FROM_ISR();
+  for (int i=0;i<MESSAGE_CAN_FRAMES_TO_SEND;i++){
+    CAN_FRAME receivedFrame;
+    memcpy(&receivedFrame, incomingData+sizeof(CAN_FRAME)*i, sizeof(CAN_FRAME));
+    // memcpy(latestMac, info->src_addr, 6);
+    receivedFrame.data.value = c+(error<<32);
+    c++;
+    if (xQueueSend(QueueHandle, &receivedFrame, 0) != pdTRUE) {
+      //Serial.println("Falha ao enviar para fila");
+          error+=1<<16;
+    }
   }
 }
 

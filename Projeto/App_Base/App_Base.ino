@@ -305,7 +305,7 @@ void setup()
     //to deal with this issue.
     Serial.setTxTimeoutMs(2);
 #endif
-    Serial.begin(1000000); //for production
+    Serial.begin(1000000); //for productionz
     //Serial.begin(115200); //for testing
     //delay(2000); //just for testing. Don't use in production
 
@@ -348,7 +348,7 @@ void setup()
 
     Serial.print("Done with init\n");
 
-    xTaskCreatePinnedToCore(taskLoop, "MainLoopTask", 8192, NULL, 1, NULL, 1);
+    xTaskCreatePinnedToCore(taskLoop, "MainLoopTask", 8192, NULL, 1 , NULL, 1);
     //xTaskCreatePinnedToCore( taskRecv, "taskRecv", 8192, NULL, 1, NULL, 1);
 
 
